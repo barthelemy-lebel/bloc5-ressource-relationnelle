@@ -1,0 +1,89 @@
+# ==============================================================================
+# (RE)Sources Relationnelles — Orchestration locale
+# ==============================================================================
+# Sert deux usages :
+#   1. Environnement de DÉVELOPPEMENT reproductible : `docker-compose up`
+#      lance l'application à l'identique sur n'importe quel poste, sans
+#      installer nginx localement. Cela supprime le classique « ça marche
+#      sur ma machine ».
+#   2. Référence de DURCISSEMENT : les options de sécurité ci-dessous
+#      documentent la configuration attendue en production.
+# ==============================================================================
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        VERSION: ${VERSION:-0.0.0-dev}
+        GIT_SHA: ${GIT_SHA:-local}
+        BUILD_DATE: ${BUILD_DATE:-unknown}
+    image: resources-relationnelles:${VERSION:-dev}
+    container_name: resources-relationnelles
+    ports:
+      # Format hôte:conteneur. Le conteneur écoute sur 8080 (nginx non-privilégié).
+      - "8080:8080"
+    restart: unless-stopped
+
+    # --------------------------------------------------------------------------
+    # DURCISSEMENT DU CONTENEUR
+    # --------------------------------------------------------------------------
+
+    # Système de fichiers racine en lecture seule.
+    # MENACE TRAITÉE : persistance d'un attaquant. Même en cas d'exécution de
+    # code, il ne peut ni déposer de webshell, ni modifier les pages servies.
+    read_only: true
+
+    # nginx a malgré tout besoin d'écrire à quelques emplacements précis.
+    # On les monte en mémoire (tmpfs) : volatiles, perdus au redémarrage.
+    tmpfs:
+      - /tmp:uid=101,gid=101
+      - /var/cache/nginx:uid=101,gid=101
+
+    # Interdit à un processus d'acquérir de nouveaux privilèges (via un binaire
+    # setuid par exemple). MENACE TRAITÉE : élévation de privilèges locale.
+    #
+    # ⚠ DÉSACTIVÉ SUR LE POSTE DE DÉVELOPPEMENT — À ACTIVER EN PRODUCTION.
+    # Le démon Docker de ce poste est installé via Snap. Le confinement AppArmor
+    # de Snap exige une transition de profil lors de l'exec, que le drapeau
+    # noyau no_new_privs interdit précisément. Résultat sur cet hôte :
+    #     exec /docker-entrypoint.sh: operation not permitted
+    # Vérifié : l'échec est indépendant du CLI (24.0.5 comme 29.6.1) et de
+    # l'image (nginx:alpine officielle comme la nôtre) ; seul l'hôte est en cause.
+    # Sur un Docker installé via apt (dont les runners GitHub Actions), l'option
+    # fonctionne : elle est donc appliquée dans le test de fumée exécuté en CI.
+    # Suivi : voir la demande d'évolution « durcissement runtime » du backlog.
+    # security_opt:
+    #   - no-new-privileges:true
+
+    # Retrait de TOUTES les capacités Linux. Servir des fichiers statiques sur
+    # un port > 1024 n'en requiert aucune.
+    # MENACE TRAITÉE : évasion de conteneur (CAP_SYS_ADMIN, CAP_NET_RAW…).
+    cap_drop:
+      - ALL
+
+    # Plafonds de ressources. MENACE TRAITÉE : déni de service — un conteneur
+    # qui s'emballe ne doit pas pouvoir saturer l'hôte entier.
+    deploy:
+      resources:
+        limits:
+          cpus: "0.50"
+          memory: 128M
+
+    # Reprend la sonde définie dans le Dockerfile et permet à Docker de
+    # signaler un conteneur devenu non fonctionnel.
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://127.0.0.1:8080/healthz"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+
+    # Rotation des journaux. MENACE TRAITÉE : saturation disque par les logs
+    # (déni de service par épuisement de ressources).
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
