@@ -17,7 +17,7 @@
 # ------------------------------------------------------------------------------
 # ÉTAPE 1 — Builder : prépare l'artefact statique et les métadonnées de version
 # ------------------------------------------------------------------------------
-FROM node:20-alpine AS builder
+FROM node:26-alpine AS builder
 
 # Métadonnées de traçabilité, injectées par la CI (voir .github/workflows/).
 # Elles permettent de savoir EXACTEMENT quel commit tourne en production :
