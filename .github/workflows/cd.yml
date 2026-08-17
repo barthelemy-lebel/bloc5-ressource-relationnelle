@@ -71,7 +71,7 @@ jobs:
       # Aucun mot de passe permanent n'est stocké : le jeton est généré pour
       # cette exécution et expire à la fin.
       - name: Authentification sur GHCR
-        uses: docker/login-action@v3
+        uses: docker/login-action@v4
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
