@@ -64,7 +64,7 @@ RUN printf '{\n  "name": "resources-relationnelles",\n  "version": "%s",\n  "com
 #
 # Choix vérifié : Trivy relève 0 vulnérabilité CRITICAL/HIGH corrigeable
 # sur cette image, contre 10 sur la 1.27-alpine précédemment utilisée.
-FROM nginxinc/nginx-unprivileged:1.30.4-alpine AS runtime
+FROM nginxinc/nginx-unprivileged:1.31.2-alpine AS runtime
 
 # Étiquettes OCI standard : identifient l'image dans le registre (GHCR).
 LABEL org.opencontainers.image.title="(RE)Sources Relationnelles" \
