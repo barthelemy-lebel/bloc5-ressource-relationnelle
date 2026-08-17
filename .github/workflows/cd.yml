@@ -65,7 +65,7 @@ jobs:
       # Buildx permet la mise en cache des couches entre exécutions : les
       # constructions suivantes sont nettement plus rapides.
       - name: Préparation de Docker Buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@v4
 
       # Authentification au registre avec le jeton éphémère du pipeline.
       # Aucun mot de passe permanent n'est stocké : le jeton est généré pour
