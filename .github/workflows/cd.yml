@@ -159,8 +159,15 @@ jobs:
           EOF
           echo "Artefact prêt :" && ls -la dist
 
+      # `enablement: true` active GitHub Pages automatiquement s'il ne l'est
+      # pas déjà, en s'appuyant sur la permission `pages: write` du job.
+      # Le déploiement ne dépend ainsi d'aucun réglage manuel préalable dans
+      # l'interface : c'est une condition de la reproductibilité, un pipeline
+      # qui exige une action humaine non documentée n'étant pas automatisé.
       - name: Configuration de GitHub Pages
         uses: actions/configure-pages@v5
+        with:
+          enablement: true
 
       - name: Téléversement de l'artefact
         uses: actions/upload-pages-artifact@v3

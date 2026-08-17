@@ -123,7 +123,7 @@ jobs:
       # MENACE TRAITÉE : fuite de secret dans l'historique Git — rappel, un
       # secret commité reste dans l'historique même après suppression du fichier.
       - name: Analyse du dépôt (Trivy — vulnérabilités, secrets, configuration)
-        uses: aquasecurity/trivy-action@0.28.0
+        uses: aquasecurity/trivy-action@v0.36.0
         with:
           scan-type: 'fs'
           scan-ref: '.'
@@ -170,7 +170,7 @@ jobs:
       # MENACE TRAITÉE : déploiement en production d'une image embarquant un
       # paquet système vulnérable.
       - name: Analyse de vulnérabilités de l'image (Trivy)
-        uses: aquasecurity/trivy-action@0.28.0
+        uses: aquasecurity/trivy-action@v0.36.0
         with:
           image-ref: 'resources-relationnelles:ci'
           scan-type: 'image'
