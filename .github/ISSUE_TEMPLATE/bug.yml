@@ -1,0 +1,106 @@
+# ==============================================================================
+# Modèle de ticket : ANOMALIE (bug)
+# ==============================================================================
+# Un modèle structuré n'est pas de la bureaucratie : il garantit que les
+# informations indispensables au diagnostic sont présentes DÈS l'ouverture du
+# ticket. Sans cela, la moitié du délai de résolution se passe en allers-retours
+# pour obtenir la version, le navigateur et les étapes de reproduction.
+# ==============================================================================
+
+name: 🐛 Anomalie
+description: Signaler un dysfonctionnement de l'application
+title: "[BUG] "
+labels: ["type:anomalie", "statut:à-qualifier"]
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Merci de signaler cette anomalie. Plus votre description sera précise,
+        plus la correction sera rapide.
+
+        ⚠️ **Ne joignez jamais de mot de passe, de jeton ou de donnée
+        personnelle réelle** dans un ticket : les tickets sont visibles par
+        toute l'équipe et peuvent être exportés.
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description du problème
+      description: Que se passe-t-il ?
+      placeholder: Lors de la validation du formulaire de contribution, la page reste bloquée.
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Étapes de reproduction
+      description: Comment reproduire le problème, étape par étape ?
+      value: |
+        1. Aller sur la page …
+        2. Cliquer sur …
+        3. Observer …
+    validations:
+      required: true
+
+  - type: textarea
+    id: attendu
+    attributes:
+      label: Comportement attendu
+      placeholder: Le formulaire aurait dû afficher le message de confirmation.
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: Version déployée
+      description: >
+        Visible sur /build-info.json de l'environnement concerné.
+        Cette information relie l'anomalie à un commit précis.
+      placeholder: "sha-a1b2c3d"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: environnement
+    attributes:
+      label: Environnement concerné
+      options:
+        - Production
+        - Préproduction
+        - Développement local
+    validations:
+      required: true
+
+  - type: dropdown
+    id: gravite
+    attributes:
+      label: Gravité
+      description: >
+        Détermine la priorité de traitement. Voir docs/06-gestion-evolutions.md
+        pour les délais associés à chaque niveau.
+      options:
+        - Bloquante — l'application est inutilisable
+        - Majeure — une fonctionnalité importante est indisponible
+        - Mineure — gêne sans blocage, contournement possible
+        - Cosmétique — défaut d'affichage
+    validations:
+      required: true
+
+  - type: input
+    id: navigateur
+    attributes:
+      label: Navigateur et version
+      placeholder: "Firefox 128 / Windows 11"
+
+  - type: checkboxes
+    id: verifications
+    attributes:
+      label: Vérifications préalables
+      options:
+        - label: J'ai vérifié qu'aucun ticket ouvert ne décrit déjà ce problème
+          required: true
+        - label: Ce ticket ne contient aucune donnée personnelle ni secret
+          required: true

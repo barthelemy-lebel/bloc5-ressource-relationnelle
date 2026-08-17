@@ -1,0 +1,14 @@
+# Configuration du sélecteur de modèles de tickets.
+#
+# `blank_issues_enabled: false` force le passage par un modèle : c'est ce qui
+# garantit que chaque demande arrive qualifiée (type, gravité, version), et
+# donc exploitable pour le pilotage.
+blank_issues_enabled: false
+
+contact_links:
+  - name: 🔐 Signaler une vulnérabilité de sécurité
+    url: https://github.com/barthelemy-lebel/resources-relationnelles/security/advisories/new
+    about: >
+      N'ouvrez JAMAIS de ticket public pour une faille de sécurité : cela la
+      rendrait exploitable par tous avant qu'un correctif n'existe. Utilisez le
+      signalement privé (divulgation responsable).

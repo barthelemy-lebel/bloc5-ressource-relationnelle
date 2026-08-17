@@ -1,0 +1,86 @@
+# ==============================================================================
+# Modèle de ticket : DEMANDE D'ÉVOLUTION
+# ==============================================================================
+# Les consignes du projet exigent explicitement « la présentation d'un outil de
+# gestion des demandes d'évolutions ». Ce modèle en est le point d'entrée.
+#
+# Il impose de formuler le BESOIN avant la SOLUTION : une demande arrivant déjà
+# sous forme de solution technique masque souvent le problème réel, et conduit
+# à développer la mauvaise fonctionnalité.
+# ==============================================================================
+
+name: ✨ Demande d'évolution
+description: Proposer une nouvelle fonctionnalité ou une amélioration
+title: "[ÉVOLUTION] "
+labels: ["type:évolution", "statut:à-qualifier"]
+
+body:
+  - type: textarea
+    id: besoin
+    attributes:
+      label: Besoin exprimé
+      description: >
+        Quel problème d'usage rencontre l'utilisateur ? Décrivez la situation,
+        pas la solution technique envisagée.
+      placeholder: >
+        En tant que citoyen, je ne peux pas retrouver les ressources que j'ai
+        consultées la semaine dernière, ce qui m'oblige à refaire ma recherche.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: profil
+    attributes:
+      label: Profil concerné
+      options:
+        - Citoyen non connecté
+        - Citoyen connecté
+        - Modérateur
+        - Administrateur du catalogue
+        - Super-administrateur
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Solution envisagée (facultatif)
+      description: Si vous avez une idée de mise en œuvre, décrivez-la ici.
+
+  - type: textarea
+    id: acceptation
+    attributes:
+      label: Critères d'acceptation
+      description: >
+        À quelles conditions considérera-t-on la demande comme satisfaite ?
+        Ces critères deviennent les cas de test de la recette.
+      value: |
+        - [ ] …
+        - [ ] …
+    validations:
+      required: true
+
+  - type: dropdown
+    id: valeur
+    attributes:
+      label: Valeur apportée
+      description: Sert à l'arbitrage de priorité au regard du coût estimé.
+      options:
+        - Forte — bénéficie à tous les utilisateurs
+        - Moyenne — bénéficie à un profil particulier
+        - Faible — confort d'usage
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: impacts
+    attributes:
+      label: Impacts à examiner lors de la qualification
+      description: >
+        Une évolution touchant aux données personnelles ou à l'authentification
+        exige une analyse de risque avant tout développement.
+      options:
+        - label: Traite ou expose des données personnelles (analyse RGPD requise)
+        - label: Touche à l'authentification ou aux autorisations
+        - label: Modifie le schéma de données
+        - label: Impacte l'accessibilité (RGAA)

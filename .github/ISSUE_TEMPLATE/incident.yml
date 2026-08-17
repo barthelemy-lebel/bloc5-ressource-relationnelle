@@ -1,0 +1,95 @@
+# ==============================================================================
+# Modèle de ticket : INCIDENT DE PRODUCTION
+# ==============================================================================
+# Distinct de l'anomalie : un incident concerne un service DÉJÀ EN PRODUCTION
+# qui est dégradé ou interrompu. La priorité n'est pas de comprendre, mais de
+# RÉTABLIR le service ; l'analyse des causes vient ensuite.
+# Ce modèle structure donc la chronologie, indispensable au post-mortem.
+# ==============================================================================
+
+name: 🚨 Incident de production
+description: Signaler une interruption ou une dégradation du service en production
+title: "[INCIDENT] "
+labels: ["type:incident", "priorité:critique"]
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Si le service est totalement interrompu, appliquez d'abord la
+        procédure de rétablissement** (docs/04-plan-deploiement.md, section
+        « Retour arrière »), puis complétez ce ticket.
+
+        Rétablir d'abord, analyser ensuite.
+
+  - type: textarea
+    id: impact
+    attributes:
+      label: Impact constaté
+      description: Qu'est-ce qui ne fonctionne plus, et pour qui ?
+      placeholder: Le catalogue est inaccessible pour tous les visiteurs (HTTP 502).
+    validations:
+      required: true
+
+  - type: dropdown
+    id: severite
+    attributes:
+      label: Sévérité
+      options:
+        - S1 — Service totalement interrompu
+        - S2 — Fonctionnalité majeure indisponible
+        - S3 — Service dégradé, contournement possible
+    validations:
+      required: true
+
+  - type: input
+    id: debut
+    attributes:
+      label: Début de l'incident (date et heure UTC)
+      placeholder: "2026-08-17 14:32 UTC"
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: Version en production au moment de l'incident
+      description: Relevée sur /build-info.json. Permet d'identifier le déploiement en cause.
+      placeholder: "sha-a1b2c3d"
+    validations:
+      required: true
+
+  - type: textarea
+    id: chronologie
+    attributes:
+      label: Chronologie
+      description: Faits horodatés — détection, actions menées, rétablissement.
+      value: |
+        - HH:MM — détection (alerte / signalement utilisateur)
+        - HH:MM — première analyse
+        - HH:MM — action corrective appliquée
+        - HH:MM — service rétabli
+    validations:
+      required: true
+
+  - type: textarea
+    id: mesures
+    attributes:
+      label: Mesures immédiates appliquées
+      placeholder: Retour arrière vers l'image sha-9f8e7d6 via docker compose pull && up -d.
+
+  - type: textarea
+    id: causes
+    attributes:
+      label: Analyse des causes (à compléter après rétablissement)
+      description: >
+        Chercher la cause systémique, pas un responsable. Un incident révèle
+        presque toujours un défaut de processus ou de garde-fou automatisé.
+
+  - type: textarea
+    id: prevention
+    attributes:
+      label: Actions de prévention
+      description: >
+        Que faut-il ajouter pour que cet incident ne puisse pas se reproduire ?
+        Idéalement un contrôle automatisé (test, alerte, étape de pipeline).
