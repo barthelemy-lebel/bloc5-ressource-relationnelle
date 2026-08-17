@@ -188,6 +188,14 @@ l'application ne comportait aucun script inline, mais sept attributs
 - **Trivy** (dépôt) — vulnérabilités, **secrets commités**, erreurs de configuration
 - **Trivy** (image) — vulnérabilités des couches système
 - **Test de fumée** — vérifie que chaque en-tête de sécurité est réellement émis
+- **Dependabot** — ouvre une PR dès qu'une version corrigée d'une dépendance,
+  d'une action GitHub ou de l'image de base est publiée
+
+> **Ces contrôles ont déjà servi.** Trivy a détecté 10 vulnérabilités
+> CRITICAL/HIGH corrigeables (openssl, libxml2, musl, nghttp2, zlib) dans
+> l'image de base `nginx-unprivileged:1.27-alpine`. Le déploiement a été
+> bloqué, la base est passée à `1.30.4-alpine` — vérifiée à 0 vulnérabilité —
+> et Dependabot signalera désormais la suivante automatiquement.
 
 ---
 
@@ -234,6 +242,13 @@ curl -s https://<url>/build-info.json   # confirmer la version rétablie
 | Développement | local | `docker-compose up` sur `localhost:8080` |
 | Intégration | push, PR | Runners GitHub Actions (éphémères) |
 | Production | push sur `main` | GitHub Pages + image publiée sur GHCR |
+
+**Prérequis de provisionnement (à faire une seule fois).** GitHub Pages doit
+être activé dans `Settings → Pages → Source : GitHub Actions`. Le jeton du
+pipeline ne peut pas créer le site lui-même (`Resource not accessible by
+integration`). Il s'agit d'un acte de provisionnement de l'environnement
+cible, distinct du déploiement : on ne recrée pas le serveur à chaque
+livraison.
 
 Aucun secret applicatif n'est nécessaire : l'application est statique et ne
 comporte ni base de données ni service tiers. L'authentification au registre

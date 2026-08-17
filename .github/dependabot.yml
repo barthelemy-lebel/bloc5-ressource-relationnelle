@@ -1,0 +1,87 @@
+# ==============================================================================
+# Dependabot — mise à jour automatique des dépendances
+# ==============================================================================
+# POURQUOI CET OUTIL EST INDISPENSABLE ICI
+#
+# Le pipeline bloque tout déploiement dès qu'une vulnérabilité CRITICAL ou HIGH
+# corrigeable est détectée (Trivy, npm audit). Cette exigence a une conséquence
+# mécanique : une version figée finit TOUJOURS par accumuler des CVE, et la
+# construction se met à échouer sans qu'aucune ligne de code n'ait changé.
+#
+# Sans automatisation, l'équipe n'aurait alors que deux issues, toutes deux
+# mauvaises : abaisser le seuil de la porte de sécurité, ou mettre à jour dans
+# l'urgence sous la pression d'un build cassé.
+#
+# Dependabot supprime ce dilemme : il ouvre une pull request dès qu'une version
+# corrigée paraît, la CI la valide automatiquement, et la mise à jour devient
+# une opération tracée, testée et choisie. C'est très exactement la
+# « maintenance corrective et évolutive » attendue par les consignes.
+#
+# Cas réel rencontré sur ce projet : l'image de base nginx-unprivileged
+# 1.27-alpine présentait 10 vulnérabilités CRITICAL/HIGH corrigeables
+# (openssl, libxml2, musl, nghttp2, zlib). Détectée par Trivy en CI, corrigée
+# en passant à 1.30.4-alpine. Dependabot signalera désormais la suivante.
+# ==============================================================================
+
+version: 2
+
+updates:
+
+  # ---------------------------------------------------------------------------
+  # Image de base Docker
+  # ---------------------------------------------------------------------------
+  # La plus critique des trois : c'est elle qui embarque le système
+  # d'exploitation et ses bibliothèques (openssl, musl, zlib), donc l'essentiel
+  # de la surface d'attaque de l'image de production.
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    commit-message:
+      prefix: "chore(docker)"
+    labels:
+      - "type:maintenance"
+      - "composant:docker"
+    open-pull-requests-limit: 5
+
+  # ---------------------------------------------------------------------------
+  # Actions GitHub utilisées par les pipelines
+  # ---------------------------------------------------------------------------
+  # MENACE TRAITÉE : compromission de la chaîne d'approvisionnement. Une action
+  # tierce s'exécute avec le jeton du pipeline ; une version compromise pourrait
+  # exfiltrer des secrets. Suivre les versions publiées permet de bénéficier
+  # rapidement des correctifs.
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    commit-message:
+      prefix: "ci"
+    labels:
+      - "type:maintenance"
+      - "composant:ci"
+
+  # ---------------------------------------------------------------------------
+  # Dépendances npm (outillage qualité uniquement)
+  # ---------------------------------------------------------------------------
+  # Ces paquets ne sont PAS embarqués dans l'image de production : l'application
+  # n'a aucune dépendance d'exécution. Le risque porte donc sur la chaîne de
+  # construction, pas sur le produit livré — d'où un rythme mensuel et des
+  # mises à jour groupées, pour limiter le bruit.
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    commit-message:
+      prefix: "chore(deps)"
+    labels:
+      - "type:maintenance"
+    groups:
+      outillage-qualite:
+        patterns:
+          - "eslint*"
+          - "@eslint/*"
+          - "stylelint*"
+          - "html-validate"

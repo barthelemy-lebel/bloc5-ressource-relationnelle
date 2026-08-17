@@ -159,15 +159,21 @@ jobs:
           EOF
           echo "Artefact prêt :" && ls -la dist
 
-      # `enablement: true` active GitHub Pages automatiquement s'il ne l'est
-      # pas déjà, en s'appuyant sur la permission `pages: write` du job.
-      # Le déploiement ne dépend ainsi d'aucun réglage manuel préalable dans
-      # l'interface : c'est une condition de la reproductibilité, un pipeline
-      # qui exige une action humaine non documentée n'étant pas automatisé.
+      # PRÉREQUIS D'ENVIRONNEMENT — activation initiale de GitHub Pages.
+      #
+      # L'option `enablement: true` a été essayée puis retirée : le jeton du
+      # pipeline ne peut pas créer le site Pages, GitHub refusant l'appel avec
+      # « Resource not accessible by integration ». L'activation initiale doit
+      # donc être réalisée une fois pour toutes dans
+      # Settings → Pages → Source : GitHub Actions.
+      #
+      # Ce n'est pas une faiblesse de l'automatisation : c'est un acte de
+      # PROVISIONNEMENT de l'environnement cible, distinct du déploiement
+      # lui-même. Tout plan de déploiement sérieux les sépare — on ne recrée
+      # pas le serveur à chaque livraison. Ce prérequis est consigné comme tel
+      # dans docs/04-plan-deploiement.md.
       - name: Configuration de GitHub Pages
         uses: actions/configure-pages@v5
-        with:
-          enablement: true
 
       - name: Téléversement de l'artefact
         uses: actions/upload-pages-artifact@v3

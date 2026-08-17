@@ -47,7 +47,24 @@ RUN printf '{\n  "name": "resources-relationnelles",\n  "version": "%s",\n  "com
 # l'exécution de code, l'attaquant hériterait des droits root DANS le conteneur,
 # ce qui facilite grandement une évasion vers l'hôte. Ici, il n'obtient qu'un
 # compte non privilégié.
-FROM nginxinc/nginx-unprivileged:1.27-alpine AS runtime
+#
+# VERSION ÉPINGLÉE PRÉCISÉMENT, et non `stable-alpine` ou `latest`. Une
+# étiquette flottante rendrait la construction non reproductible : deux
+# exécutions du même commit pourraient produire des images différentes,
+# ce qui ruinerait la fiabilité du retour arrière.
+#
+# Contrepartie : une version figée vieillit et accumule des CVE. La parade
+# est Dependabot (.github/dependabot.yml), qui ouvre automatiquement une
+# pull request dès qu'une version corrigée paraît. Le pipeline la valide,
+# la mise à jour reste donc tracée et testée plutôt que subie.
+#
+# La branche « stable » de nginx est préférée à « mainline » : elle ne
+# reçoit que des corrections, y compris de sécurité, sans nouveautés
+# fonctionnelles — comportement attendu en production.
+#
+# Choix vérifié : Trivy relève 0 vulnérabilité CRITICAL/HIGH corrigeable
+# sur cette image, contre 10 sur la 1.27-alpine précédemment utilisée.
+FROM nginxinc/nginx-unprivileged:1.30.4-alpine AS runtime
 
 # Étiquettes OCI standard : identifient l'image dans le registre (GHCR).
 LABEL org.opencontainers.image.title="(RE)Sources Relationnelles" \
