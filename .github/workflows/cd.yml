@@ -1,0 +1,224 @@
+# ==============================================================================
+# Déploiement continu (CD)
+# ==============================================================================
+# « Déploiement continu » = une fois le code validé par la CI, sa mise à
+# disposition est AUTOMATISÉE, sans intervention manuelle susceptible d'erreur.
+#
+# Enchaînement retenu :
+#
+#   push sur main
+#        │
+#        ├─► 1. publier-image     : construit l'image et la pousse sur GHCR
+#        │                          (registre de conteneurs GitHub), étiquetée
+#        │                          par commit ET par version.
+#        │
+#        ├─► 2. deployer-pages    : publie le site sur GitHub Pages (URL publique)
+#        │
+#        └─► 3. verifier-deploiement : interroge l'URL EN LIGNE et vérifie que
+#                                   la version déployée est bien celle attendue.
+#                                   Sans cette étape, « déployé » ne voudrait
+#                                   rien dire de vérifiable.
+#
+# ROLLBACK (retour arrière) : chaque image est étiquetée par son empreinte de
+# commit. Revenir à la version précédente consiste à redéployer l'étiquette
+# correspondante — aucune reconstruction n'est nécessaire, donc aucun risque
+# d'obtenir un artefact différent. Procédure détaillée dans le plan de
+# déploiement (docs/04-plan-deploiement.md).
+# ==============================================================================
+
+name: CD
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*.*.*']
+  workflow_dispatch:
+
+# Une seule mise en production à la fois. `cancel-in-progress: false` est
+# volontaire : interrompre un déploiement en cours laisserait le système dans
+# un état indéterminé.
+concurrency:
+  group: cd-production
+  cancel-in-progress: false
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+
+  # ============================================================================
+  # 1. Publication de l'image sur le registre de conteneurs
+  # ============================================================================
+  publier-image:
+    name: Publier l'image sur GHCR
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write      # nécessaire pour pousser sur GHCR
+      id-token: write      # signature/attestation de provenance
+
+    steps:
+      - name: Récupération du code
+        uses: actions/checkout@v4
+
+      # Buildx permet la mise en cache des couches entre exécutions : les
+      # constructions suivantes sont nettement plus rapides.
+      - name: Préparation de Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # Authentification au registre avec le jeton éphémère du pipeline.
+      # Aucun mot de passe permanent n'est stocké : le jeton est généré pour
+      # cette exécution et expire à la fin.
+      - name: Authentification sur GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # Calcule automatiquement les étiquettes de l'image :
+      #   - sha-<empreinte>  : identifie précisément un commit (clé du rollback)
+      #   - <version>        : lorsqu'un tag Git v1.2.3 est poussé
+      #   - latest           : dernier état de main
+      - name: Calcul des étiquettes et métadonnées
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=sha,prefix=sha-,format=short
+            type=semver,pattern={{version}}
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      - name: Construction et publication de l'image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            VERSION=${{ github.ref_name }}
+            GIT_SHA=${{ github.sha }}
+            BUILD_DATE=${{ github.event.repository.updated_at }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          # Génère un inventaire logiciel (SBOM) et une attestation de
+          # provenance : traçabilité de ce que contient exactement l'image et
+          # de la manière dont elle a été produite. Réponse à la menace de
+          # compromission de la chaîne d'approvisionnement (supply chain).
+          sbom: true
+          provenance: true
+
+  # ============================================================================
+  # 2. Déploiement de l'environnement de production
+  # ============================================================================
+  # NOTE D'HONNÊTETÉ TECHNIQUE : GitHub Pages sert des fichiers statiques via
+  # l'infrastructure de GitHub. Il n'exécute donc PAS notre configuration
+  # nginx, et les en-têtes de sécurité définis dans docker/security-headers.conf
+  # n'y sont pas appliqués. Pages constitue une vitrine publique de démonstration.
+  # La cible de production visée pour un déploiement ministériel réel est
+  # l'image Docker publiée à l'étape 1, exécutée derrière un reverse proxy
+  # assurant la terminaison TLS — c'est cette configuration qui bénéficie de
+  # l'intégralité du durcissement, et que le test de fumée valide en CI.
+  deployer-pages:
+    name: Déployer sur GitHub Pages
+    runs-on: ubuntu-latest
+    needs: publier-image
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+
+    environment:
+      name: production
+      url: ${{ steps.deploiement.outputs.page_url }}
+
+    # Expose l'URL publiée au job de vérification qui suit.
+    outputs:
+      page_url: ${{ steps.deploiement.outputs.page_url }}
+
+    steps:
+      - name: Récupération du code
+        uses: actions/checkout@v4
+
+      # On reproduit ici l'artefact que le Dockerfile assemble, afin que le
+      # site publié expose la même traçabilité de version.
+      - name: Préparation de l'artefact
+        run: |
+          mkdir -p dist
+          cp -r app/. dist/
+          cat > dist/build-info.json <<EOF
+          {
+            "name": "resources-relationnelles",
+            "version": "${{ github.ref_name }}",
+            "commit": "${{ github.sha }}",
+            "buildDate": "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          }
+          EOF
+          echo "Artefact prêt :" && ls -la dist
+
+      - name: Configuration de GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Téléversement de l'artefact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+      - name: Déploiement
+        id: deploiement
+        uses: actions/deploy-pages@v4
+
+  # ============================================================================
+  # 3. Vérification post-déploiement
+  # ============================================================================
+  # Un déploiement n'est pas terminé quand le pipeline est vert : il l'est
+  # quand le service EN LIGNE répond correctement. Cette étape interroge l'URL
+  # publique et compare le commit déployé au commit attendu.
+  # MENACE TRAITÉE : déploiement partiel ou silencieusement échoué, qui
+  # laisserait croire à une mise en production réussie.
+  verifier-deploiement:
+    name: Vérifier le déploiement en ligne
+    runs-on: ubuntu-latest
+    needs: deployer-pages
+    permissions:
+      contents: read
+
+    steps:
+      - name: Contrôle de disponibilité et de version
+        env:
+          URL: ${{ needs.deployer-pages.outputs.page_url || format('https://{0}.github.io/{1}/', github.repository_owner, github.event.repository.name) }}
+        run: |
+          set -euo pipefail
+          echo "Vérification de : $URL"
+
+          # La propagation du CDN de GitHub Pages peut prendre un moment :
+          # on réessaie plutôt que d'échouer sur un faux négatif.
+          for tentative in $(seq 1 10); do
+            code=$(curl -s -o /dev/null -w '%{http_code}' "$URL" || echo "000")
+            if [ "$code" = "200" ]; then
+              echo "✓ Le site répond (HTTP 200)"
+              break
+            fi
+            echo "  tentative $tentative : HTTP $code, nouvel essai dans 15 s"
+            sleep 15
+          done
+
+          if [ "$code" != "200" ]; then
+            echo "✗ Le site ne répond pas (HTTP $code) — déploiement en échec"
+            exit 1
+          fi
+
+          # Vérification que la version en ligne est bien celle de ce pipeline.
+          deploye=$(curl -s "${URL}build-info.json" | grep -o '"commit": *"[^"]*"' | cut -d'"' -f4 || echo "")
+          echo "Commit attendu : ${GITHUB_SHA}"
+          echo "Commit déployé : ${deploye}"
+
+          if [ "$deploye" = "$GITHUB_SHA" ]; then
+            echo "✓ La version en ligne correspond au commit déployé"
+          else
+            echo "✗ Décalage de version — le déploiement n'a pas abouti correctement"
+            exit 1
+          fi

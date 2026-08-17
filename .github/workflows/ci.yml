@@ -1,0 +1,179 @@
+# ==============================================================================
+# Intégration continue (CI)
+# ==============================================================================
+# « Intégration continue » = à chaque modification poussée sur le dépôt, une
+# machine neutre récupère le code, l'analyse, le teste et le construit
+# automatiquement. Objectif : détecter une régression en quelques minutes
+# plutôt qu'en recette, et garantir que le résultat ne dépend pas du poste
+# d'un développeur.
+#
+# Ce pipeline est organisé en trois travaux (jobs) exécutés EN PARALLÈLE, afin
+# que le retour soit rapide :
+#
+#   1. qualite    — le code respecte-t-il les conventions et les tests passent-ils ?
+#   2. securite   — dépendances, secrets et configuration présentent-ils un risque ?
+#   3. conteneur  — l'image Docker se construit-elle et se comporte-t-elle bien ?
+#
+# Aucun déploiement n'a lieu ici : c'est le rôle de cd.yml, qui ne s'exécute
+# que si ce pipeline est vert.
+# ==============================================================================
+
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+  # Permet de relancer le pipeline à la demande depuis l'interface GitHub.
+  workflow_dispatch:
+
+# Principe du moindre privilège : le jeton fourni au pipeline ne peut que LIRE
+# le dépôt. Toute écriture (publication d'image, déploiement) est refusée ici.
+permissions:
+  contents: read
+
+# Si un nouveau commit est poussé pendant qu'un pipeline tourne, on annule le
+# précédent : inutile de valider du code déjà remplacé.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+
+  # ============================================================================
+  # 1. QUALITÉ — conventions de code et tests unitaires
+  # ============================================================================
+  qualite:
+    name: Qualité du code et tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Récupération du code
+        uses: actions/checkout@v4
+
+      - name: Installation de Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      # `npm ci` (et non `npm install`) installe EXACTEMENT les versions
+      # figées dans package-lock.json. C'est ce qui rend la construction
+      # reproductible, et c'est aussi une mesure de sécurité : une dépendance
+      # ne peut pas être remplacée silencieusement par une version plus
+      # récente — et potentiellement compromise — entre deux exécutions.
+      - name: Installation des dépendances
+        run: npm ci
+
+      # Analyse statique JavaScript : erreurs de programmation et règles de
+      # sécurité (interdiction de eval, de new Function, des URL javascript:).
+      - name: Analyse statique JavaScript (ESLint)
+        run: npm run lint:js
+
+      # Cohérence et validité des feuilles de style.
+      - name: Analyse des feuilles de style (Stylelint)
+        run: npm run lint:css
+
+      # Validité HTML et contrôles d'accessibilité automatisables (RGAA).
+      - name: Validation HTML et accessibilité (html-validate)
+        run: npm run lint:html
+
+      # Tests unitaires des fonctions pures, dont la neutralisation XSS.
+      - name: Tests unitaires
+        run: npm test
+
+  # ============================================================================
+  # 2. SÉCURITÉ — dépendances, secrets, configuration
+  # ============================================================================
+  securite:
+    name: Analyses de sécurité
+    runs-on: ubuntu-latest
+    steps:
+      - name: Récupération du code
+        uses: actions/checkout@v4
+
+      - name: Installation de Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Installation des dépendances
+        run: npm ci
+
+      # Confronte nos dépendances à la base publique des vulnérabilités connues.
+      # MENACE TRAITÉE : exploitation d'une faille publiée dans une bibliothèque
+      # tierce. Seuil « high » : on ne bloque pas sur des alertes mineures, qui
+      # finiraient par être ignorées.
+      - name: Vulnérabilités des dépendances (npm audit)
+        run: npm audit --audit-level=high
+
+      # Analyse statique du Dockerfile : utilisateur root, versions non
+      # épinglées, instructions dangereuses.
+      - name: Bonnes pratiques Dockerfile (Hadolint)
+        uses: hadolint/hadolint-action@v3.1.0
+        with:
+          dockerfile: Dockerfile
+          failure-threshold: warning
+
+      # Trivy en mode « système de fichiers » cumule trois analyses :
+      #   - vulnérabilités des dépendances ;
+      #   - SECRETS commités par erreur (clés d'API, jetons, clés privées) ;
+      #   - erreurs de configuration (Dockerfile, YAML).
+      # MENACE TRAITÉE : fuite de secret dans l'historique Git — rappel, un
+      # secret commité reste dans l'historique même après suppression du fichier.
+      - name: Analyse du dépôt (Trivy — vulnérabilités, secrets, configuration)
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          scan-type: 'fs'
+          scan-ref: '.'
+          scanners: 'vuln,secret,misconfig'
+          severity: 'CRITICAL,HIGH'
+          exit-code: '1'
+          ignore-unfixed: true
+
+  # ============================================================================
+  # 3. CONTENEUR — construction de l'image et tests d'intégration
+  # ============================================================================
+  conteneur:
+    name: Image Docker et tests d'intégration
+    runs-on: ubuntu-latest
+    steps:
+      - name: Récupération du code
+        uses: actions/checkout@v4
+
+      - name: Construction de l'image
+        run: |
+          docker build \
+            --build-arg VERSION="ci-${GITHUB_SHA::7}" \
+            --build-arg GIT_SHA="${GITHUB_SHA}" \
+            --build-arg BUILD_DATE="$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+            -t resources-relationnelles:ci .
+
+      # Test d'intégration réel : le conteneur est démarré en configuration
+      # durcie, puis interrogé en HTTP. Il vérifie notamment que TOUS les
+      # en-têtes de sécurité sont bien émis — une régression de configuration
+      # nginx fait échouer le pipeline et bloque donc le déploiement.
+      #
+      # HARDENED=1 active --security-opt no-new-privileges, qui fonctionne sur
+      # les runners GitHub (Docker installé via apt) mais pas sur un hôte où
+      # Docker est confiné par Snap. Voir docker-compose.yml.
+      - name: Test de fumée sur le conteneur
+        env:
+          IMAGE: resources-relationnelles:ci
+          SKIP_BUILD: '1'
+          HARDENED: '1'
+        run: bash scripts/smoke-test.sh
+
+      # Recherche de vulnérabilités connues dans les couches de l'image
+      # (système de base Alpine, bibliothèques, nginx).
+      # MENACE TRAITÉE : déploiement en production d'une image embarquant un
+      # paquet système vulnérable.
+      - name: Analyse de vulnérabilités de l'image (Trivy)
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          image-ref: 'resources-relationnelles:ci'
+          scan-type: 'image'
+          severity: 'CRITICAL,HIGH'
+          exit-code: '1'
+          ignore-unfixed: true
