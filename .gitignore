@@ -1,0 +1,49 @@
+# ==============================================================================
+# Fichiers exclus du versionnement
+# ==============================================================================
+# Premier rempart contre la fuite de secrets : un secret commité reste dans
+# l'historique Git même après suppression du fichier. La seule remédiation
+# réelle est alors la RÉVOCATION du secret, puis la réécriture de l'historique.
+# D'où l'importance de ce fichier dès le premier commit.
+# ==============================================================================
+
+# --- Secrets et configuration d'environnement -------------------------------
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+id_rsa*
+secrets/
+credentials.json
+
+# --- Dépendances -------------------------------------------------------------
+node_modules/
+npm-debug.log*
+yarn-error.log*
+package-lock.json.bak
+
+# --- Artefacts de build et de test -------------------------------------------
+dist/
+build/
+coverage/
+*.tsbuildinfo
+.nyc_output/
+
+# --- Système d'exploitation --------------------------------------------------
+.DS_Store
+Thumbs.db
+*~
+.directory
+
+# --- Éditeurs et outillage local ---------------------------------------------
+.vscode/
+.idea/
+*.swp
+.claude/
+
+# --- Journaux ----------------------------------------------------------------
+*.log
+logs/

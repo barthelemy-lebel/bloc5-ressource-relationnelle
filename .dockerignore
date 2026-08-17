@@ -1,0 +1,47 @@
+# ==============================================================================
+# Fichiers exclus du contexte de build Docker
+# ==============================================================================
+# Objectif double :
+#  1. SÉCURITÉ — empêcher que des secrets (.env), l'historique Git ou des
+#     identifiants se retrouvent embarqués dans une couche de l'image.
+#     Rappel : une couche Docker est immuable ; un secret copié puis supprimé
+#     dans une instruction ultérieure reste extractible de l'image publiée.
+#  2. PERFORMANCE — réduire le contexte envoyé au démon Docker.
+# ==============================================================================
+
+# Historique et métadonnées Git
+.git
+.gitignore
+.github
+
+# Secrets et configuration locale
+.env
+.env.*
+*.pem
+*.key
+secrets/
+
+# Dépendances et artefacts
+node_modules
+npm-debug.log*
+dist/
+coverage/
+
+# Documentation et livrables (non nécessaires à l'exécution)
+docs/
+README.md
+*.md
+
+# Tests et outillage (exécutés en CI, pas dans l'image)
+tests/
+scripts/
+eslint.config.js
+.stylelintrc.json
+.htmlvalidate.json
+
+# Fichiers d'environnement de développement
+.vscode/
+.idea/
+.claude/
+docker-compose.yml
+Dockerfile

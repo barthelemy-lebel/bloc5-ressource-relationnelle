@@ -1,0 +1,30 @@
+{
+  "name": "resources-relationnelles",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Plateforme citoyenne de ressources relationnelles — bloc INFCDAAL3 (déploiement et sécurisation)",
+  "license": "MIT",
+  "scripts": {
+    "lint": "npm run lint:js && npm run lint:css && npm run lint:html",
+    "lint:js": "eslint app tests",
+    "lint:css": "stylelint \"app/**/*.css\"",
+    "lint:html": "html-validate app/index.html",
+    "test": "node --test tests/unit/",
+    "test:smoke": "bash scripts/smoke-test.sh",
+    "audit:deps": "npm audit --audit-level=high",
+    "docker:build": "docker build -t resources-relationnelles:dev .",
+    "docker:up": "docker-compose up -d --build",
+    "docker:down": "docker-compose down",
+    "verify": "npm run lint && npm test"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.0.0",
+    "eslint": "^9.0.0",
+    "html-validate": "^9.0.0",
+    "stylelint": "^16.0.0",
+    "stylelint-config-standard": "^36.0.0"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
