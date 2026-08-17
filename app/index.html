@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>(RE)Sources Relationnelles</title>
+  <meta name="description" content="Plateforme citoyenne de partage de ressources relationnelles" />
+  <link rel="stylesheet" href="style.css" />
+  <!-- Police distinctive : DM Serif Display + Source Sans 3 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Source+Sans+3:wght@300;400;600;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+<!-- ===== HEADER / NAVIGATION STICKY ===== -->
+<header class="site-header" role="banner">
+  <div class="container header-inner">
+    <!-- Logo -->
+    <a href="#" class="site-logo" data-page="accueil" aria-label="(RE)Sources Relationnelles – Accueil">
+      <span class="logo-re">(RE)</span><span class="logo-sources">Sources</span>
+    </a>
+
+    <!-- Navigation principale -->
+    <nav class="main-nav" role="navigation" aria-label="Navigation principale">
+      <ul class="nav-list" role="list">
+        <li><a class="nav-link active" data-page="accueil" href="#" aria-current="page">Accueil</a></li>
+        <li><a class="nav-link" data-page="ressources" href="#">Ressources</a></li>
+        <li><a class="nav-link" data-page="contribution" href="#">Contribuer</a></li>
+        <li><a class="nav-link" data-page="moderation" href="#">Modération</a></li>
+        <li><a class="nav-link" data-page="tableau-de-bord" href="#">Tableau de bord</a></li>
+      </ul>
+    </nav>
+
+    <!-- Actions header -->
+    <div class="header-actions">
+      <button type="button" class="btn btn-outline btn-sm" id="btn-login" aria-haspopup="dialog" aria-expanded="false">
+        <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        Connexion
+      </button>
+      <!-- Bouton burger mobile -->
+      <button type="button" class="burger" id="burger-btn" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="main-nav-list">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- ===== PAGES (une seule visible à la fois) ===== -->
+<main id="main-content">
+
+  <!-- ==================== PAGE : ACCUEIL ==================== -->
+  <section id="page-accueil" class="page active" aria-labelledby="accueil-title">
+
+    <!-- Hero -->
+    <div class="hero">
+      <div class="hero-bg-shapes" aria-hidden="true">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
+      </div>
+      <div class="container hero-content">
+        <p class="hero-eyebrow">Plateforme citoyenne</p>
+        <h1 id="accueil-title" class="hero-title">
+          Des ressources pour<br />
+          <em>mieux vivre ensemble</em>
+        </h1>
+        <p class="hero-desc">
+          (RE)Sources Relationnelles est un espace de partage et de découverte
+          dédié au bien-être psychologique et au renforcement des liens sociaux.
+        </p>
+        <div class="hero-cta">
+          <button type="button" class="btn btn-primary btn-lg" data-page="ressources">Explorer les ressources</button>
+          <button type="button" class="btn btn-ghost btn-lg" data-page="contribution">Contribuer</button>
+        </div>
+        <!-- Statistiques hero -->
+        <div class="hero-stats" role="list" aria-label="Chiffres clés">
+          <div class="stat" role="listitem">
+            <span class="stat-num">1 240</span>
+            <span class="stat-label">Ressources partagées</span>
+          </div>
+          <div class="stat" role="listitem">
+            <span class="stat-num">3 800+</span>
+            <span class="stat-label">Citoyens actifs</span>
+          </div>
+          <div class="stat" role="listitem">
+            <span class="stat-num">98</span>
+            <span class="stat-label">Communes partenaires</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Résumé des parcours -->
+    <div class="container section">
+      <h2 class="section-title">Vos parcours</h2>
+      <p class="section-sub">Choisissez votre rôle et découvrez ce que la plateforme vous offre.</p>
+      <div class="parcours-grid">
+        <!-- Carte Citoyen -->
+        <article class="parcours-card" tabindex="0">
+          <div class="card-icon" aria-hidden="true">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          </div>
+          <h3 class="card-title">Citoyen</h3>
+          <p class="card-desc">Découvrez et partagez des ressources pour améliorer vos relations au quotidien.</p>
+          <ul class="card-features">
+            <li>Parcourir le catalogue filtrable</li>
+            <li>Soumettre une contribution</li>
+            <li>Enregistrer vos favoris</li>
+          </ul>
+          <button type="button" class="btn btn-primary btn-sm mt-auto" data-page="ressources">Commencer</button>
+        </article>
+
+        <!-- Carte Super-utilisateur -->
+        <article class="parcours-card parcours-card--featured" tabindex="0">
+          <div class="card-badge">Populaire</div>
+          <div class="card-icon" aria-hidden="true">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          </div>
+          <h3 class="card-title">Super-utilisateur</h3>
+          <p class="card-desc">Devenez référent dans votre communauté et aidez à valider les contenus.</p>
+          <ul class="card-features">
+            <li>Accès à la modération</li>
+            <li>Annotation des ressources</li>
+            <li>Statistiques de contribution</li>
+          </ul>
+          <button type="button" class="btn btn-primary btn-sm mt-auto" data-page="moderation">Modérer</button>
+        </article>
+
+        <!-- Carte Administrateur -->
+        <article class="parcours-card" tabindex="0">
+          <div class="card-icon" aria-hidden="true">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          </div>
+          <h3 class="card-title">Administrateur</h3>
+          <p class="card-desc">Gérez la plateforme, les utilisateurs et suivez les indicateurs de qualité.</p>
+          <ul class="card-features">
+            <li>Tableau de bord analytique</li>
+            <li>Gestion des rôles et droits</li>
+            <li>Rapports RGPD / RGAA</li>
+          </ul>
+          <button type="button" class="btn btn-primary btn-sm mt-auto" data-page="tableau-de-bord">Tableau de bord</button>
+        </article>
+      </div>
+    </div>
+
+    <!-- Mise en avant ressources récentes -->
+    <div class="container section">
+      <h2 class="section-title">Ressources à la une</h2>
+      <div class="featured-grid">
+        <article class="resource-card" tabindex="0">
+          <span class="resource-tag tag-communication">Communication</span>
+          <h3>Écoute active : guide pratique</h3>
+          <p>Techniques fondamentales pour mieux écouter sans juger, idéales pour le cadre familial.</p>
+          <div class="card-meta"><span>🕐 8 min</span><span>⭐ 4.8</span></div>
+        </article>
+        <article class="resource-card" tabindex="0">
+          <span class="resource-tag tag-gestion">Gestion des conflits</span>
+          <h3>Désamorcer une dispute en 5 étapes</h3>
+          <p>Méthode validée pour retrouver le calme et rebâtir la confiance après un désaccord.</p>
+          <div class="card-meta"><span>🕐 12 min</span><span>⭐ 4.6</span></div>
+        </article>
+        <article class="resource-card" tabindex="0">
+          <span class="resource-tag tag-bien-etre">Bien-être</span>
+          <h3>Méditation de pleine conscience</h3>
+          <p>Programme audio de 21 jours pour réduire le stress et améliorer les interactions.</p>
+          <div class="card-meta"><span>🕐 5 min</span><span>⭐ 4.9</span></div>
+        </article>
+      </div>
+      <div class="section-cta">
+        <button type="button" class="btn btn-outline" data-page="ressources">Voir tout le catalogue →</button>
+      </div>
+    </div>
+
+    <!-- Comment ça marche -->
+    <div class="how-it-works">
+      <div class="container section">
+        <h2 class="section-title">Comment ça marche ?</h2>
+        <ol class="steps-list" role="list">
+          <li class="step">
+            <div class="step-num" aria-hidden="true">01</div>
+            <h3 class="step-title">Créez votre compte</h3>
+            <p>Inscription simple et sécurisée. Vos données restent sous votre contrôle.</p>
+          </li>
+          <li class="step">
+            <div class="step-num" aria-hidden="true">02</div>
+            <h3 class="step-title">Explorez &amp; partagez</h3>
+            <p>Parcourez les ressources ou soumettez les vôtres pour enrichir la communauté.</p>
+          </li>
+          <li class="step">
+            <div class="step-num" aria-hidden="true">03</div>
+            <h3 class="step-title">Modération citoyenne</h3>
+            <p>Chaque ressource est validée par la communauté avant publication.</p>
+          </li>
+          <li class="step">
+            <div class="step-num" aria-hidden="true">04</div>
+            <h3 class="step-title">Progressez ensemble</h3>
+            <p>Suivez votre impact et celui de votre communauté dans le tableau de bord.</p>
+          </li>
+        </ol>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ==================== PAGE : RESSOURCES ==================== -->
+  <section id="page-ressources" class="page" aria-labelledby="ressources-title" hidden>
+    <div class="container section">
+      <div class="page-header">
+        <h1 id="ressources-title">Catalogue des ressources</h1>
+        <p class="page-subtitle">Parcourez <span id="resource-count">12</span> ressources validées par la communauté.</p>
+      </div>
+
+      <!-- Barre de filtres -->
+      <div class="filters-bar" role="search" aria-label="Filtrer les ressources">
+        <div class="search-wrap">
+          <label for="search-input" class="sr-only">Rechercher une ressource</label>
+          <svg class="search-icon" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          <input type="search" id="search-input" class="search-input" placeholder="Mots-clés…" aria-label="Recherche par mots-clés" />
+        </div>
+
+        <div class="filter-selects">
+          <label for="filter-type" class="sr-only">Filtrer par type</label>
+          <select id="filter-type" class="filter-select" aria-label="Type de ressource">
+            <option value="">Tous les types</option>
+            <option value="article">Article</option>
+            <option value="video">Vidéo</option>
+            <option value="audio">Audio</option>
+            <option value="atelier">Atelier</option>
+            <option value="guide">Guide</option>
+          </select>
+
+          <label for="filter-relation" class="sr-only">Filtrer par type de relation</label>
+          <select id="filter-relation" class="filter-select" aria-label="Type de relation">
+            <option value="">Toutes les relations</option>
+            <option value="famille">Famille</option>
+            <option value="couple">Couple</option>
+            <option value="amis">Amis</option>
+            <option value="travail">Travail</option>
+            <option value="voisinage">Voisinage</option>
+          </select>
+
+          <button type="button" class="btn btn-ghost btn-sm" id="btn-reset-filters" aria-label="Réinitialiser les filtres">
+            <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+            Réinitialiser
+          </button>
+        </div>
+      </div>
+
+      <!-- Grille des ressources (générée dynamiquement par JS) -->
+      <div id="resources-grid" class="resources-grid" role="list" aria-live="polite" aria-label="Résultats">
+        <!-- Rempli par JS -->
+      </div>
+
+      <!-- Message si aucun résultat -->
+      <div id="no-results" class="no-results" hidden aria-live="polite">
+        <p>Aucune ressource ne correspond à votre recherche. <button type="button" class="link-btn" id="btn-clear-search">Effacer les filtres</button></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== PAGE : CONTRIBUTION ==================== -->
+  <section id="page-contribution" class="page" aria-labelledby="contribution-title" hidden>
+    <div class="container section">
+      <div class="page-header">
+        <h1 id="contribution-title">Contribuer une ressource</h1>
+        <p class="page-subtitle">Partagez vos connaissances pour enrichir la communauté.</p>
+      </div>
+
+      <!-- Indicateur de progression du workflow -->
+      <div class="workflow-steps" role="group" aria-label="Étapes du processus de contribution">
+        <div class="workflow-step active" data-step="1">
+          <div class="ws-circle" aria-hidden="true">1</div>
+          <span class="ws-label">Rédaction</span>
+        </div>
+        <div class="workflow-line" aria-hidden="true"></div>
+        <div class="workflow-step" data-step="2">
+          <div class="ws-circle" aria-hidden="true">2</div>
+          <span class="ws-label">Vérification</span>
+        </div>
+        <div class="workflow-line" aria-hidden="true"></div>
+        <div class="workflow-step" data-step="3">
+          <div class="ws-circle" aria-hidden="true">3</div>
+          <span class="ws-label">Modération</span>
+        </div>
+        <div class="workflow-line" aria-hidden="true"></div>
+        <div class="workflow-step" data-step="4">
+          <div class="ws-circle" aria-hidden="true">4</div>
+          <span class="ws-label">Publication</span>
+        </div>
+      </div>
+
+      <div class="contribution-layout">
+        <!-- Formulaire principal -->
+        <div class="form-card">
+          <form id="contribution-form" novalidate aria-label="Formulaire de contribution de ressource">
+            <fieldset class="form-fieldset">
+              <legend class="fieldset-legend">Informations sur la ressource</legend>
+
+              <div class="form-group">
+                <label for="res-titre" class="form-label">
+                  Titre de la ressource <span class="required" aria-hidden="true">*</span>
+                </label>
+                <input type="text" id="res-titre" name="titre" class="form-input" required
+                  placeholder="Ex : Comment mieux communiquer avec son adolescent"
+                  aria-describedby="titre-hint titre-error" maxlength="120" />
+                <span id="titre-hint" class="form-hint">80 à 120 caractères recommandés.</span>
+                <span id="titre-error" class="form-error" role="alert" aria-live="polite" hidden>Veuillez saisir un titre.</span>
+              </div>
+
+              <div class="form-group">
+                <label for="res-type" class="form-label">
+                  Type de ressource <span class="required" aria-hidden="true">*</span>
+                </label>
+                <select id="res-type" name="type" class="form-select" required aria-describedby="type-error">
+                  <option value="">— Choisir un type —</option>
+                  <option value="article">Article</option>
+                  <option value="video">Vidéo</option>
+                  <option value="audio">Audio</option>
+                  <option value="atelier">Atelier</option>
+                  <option value="guide">Guide pratique</option>
+                </select>
+                <span id="type-error" class="form-error" role="alert" aria-live="polite" hidden>Veuillez sélectionner un type.</span>
+              </div>
+
+              <div class="form-group">
+                <label for="res-relation" class="form-label">
+                  Type de relation concernée <span class="required" aria-hidden="true">*</span>
+                </label>
+                <select id="res-relation" name="relation" class="form-select" required>
+                  <option value="">— Choisir une relation —</option>
+                  <option value="famille">Famille</option>
+                  <option value="couple">Couple</option>
+                  <option value="amis">Amis</option>
+                  <option value="travail">Travail</option>
+                  <option value="voisinage">Voisinage</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="res-resume" class="form-label">
+                  Résumé <span class="required" aria-hidden="true">*</span>
+                </label>
+                <textarea id="res-resume" name="resume" class="form-textarea" required rows="5"
+                  placeholder="Décrivez en quelques phrases le contenu et l'utilité de cette ressource…"
+                  aria-describedby="resume-hint" maxlength="600"></textarea>
+                <span id="resume-hint" class="form-hint"><span id="char-count">0</span>/600 caractères.</span>
+              </div>
+
+              <div class="form-group">
+                <label for="res-url" class="form-label">URL ou source (optionnel)</label>
+                <input type="url" id="res-url" name="url" class="form-input"
+                  placeholder="https://…" aria-describedby="url-hint" />
+                <span id="url-hint" class="form-hint">Lien vers la ressource originale si disponible.</span>
+              </div>
+            </fieldset>
+
+            <!-- Confidentialité RGPD -->
+            <fieldset class="form-fieldset">
+              <legend class="fieldset-legend">Confidentialité &amp; consentements RGPD</legend>
+
+              <div class="form-group">
+                <label for="res-visibilite" class="form-label">Visibilité de la ressource</label>
+                <div class="radio-group" role="radiogroup" aria-labelledby="visib-legend">
+                  <label class="radio-label">
+                    <input type="radio" name="visibilite" value="publique" checked />
+                    <span>Publique — visible de tous</span>
+                  </label>
+                  <label class="radio-label">
+                    <input type="radio" name="visibilite" value="communaute" />
+                    <span>Communauté — membres connectés</span>
+                  </label>
+                  <label class="radio-label">
+                    <input type="radio" name="visibilite" value="privee" />
+                    <span>Privée — moi uniquement</span>
+                  </label>
+                </div>
+              </div>
+
+              <div class="checkboxes-group">
+                <div class="form-check">
+                  <input type="checkbox" id="check-rgpd" name="rgpd" required class="form-checkbox" aria-describedby="check-rgpd-error" />
+                  <label for="check-rgpd">
+                    J'ai lu et j'accepte la
+                    <a href="#" class="link-inline" aria-label="Politique de confidentialité (ouvre une nouvelle page)">politique de confidentialité</a>.
+                    <span class="required" aria-hidden="true">*</span>
+                  </label>
+                  <span id="check-rgpd-error" class="form-error" role="alert" aria-live="polite" hidden>Ce consentement est obligatoire.</span>
+                </div>
+
+                <div class="form-check">
+                  <input type="checkbox" id="check-licence" name="licence" required class="form-checkbox" />
+                  <label for="check-licence">
+                    Je certifie que cette ressource respecte les droits d'auteur et je l'autorise
+                    à être partagée sous licence <abbr title="Creative Commons Attribution-NonCommercial">CC BY-NC</abbr>.
+                    <span class="required" aria-hidden="true">*</span>
+                  </label>
+                </div>
+
+                <div class="form-check">
+                  <input type="checkbox" id="check-notif" name="notifications" class="form-checkbox" />
+                  <label for="check-notif">
+                    Je souhaite recevoir un e-mail lors de la validation de ma contribution. <span class="optional">(optionnel)</span>
+                  </label>
+                </div>
+              </div>
+            </fieldset>
+
+            <!-- Boutons de soumission -->
+            <div class="form-actions">
+              <button type="button" class="btn btn-ghost" id="btn-save-draft">Enregistrer le brouillon</button>
+              <button type="submit" class="btn btn-primary">Soumettre la ressource</button>
+            </div>
+
+            <!-- Message de succès (masqué) -->
+            <div id="form-success" class="form-success" hidden role="alert">
+              <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              Votre ressource a été soumise ! Elle passera en modération sous 48h.
+            </div>
+          </form>
+        </div>
+
+        <!-- Encart d'aide latéral -->
+        <aside class="contribution-aside" aria-label="Aide à la contribution">
+          <div class="aside-card">
+            <h2 class="aside-title">💡 Conseils de rédaction</h2>
+            <ul class="aside-list">
+              <li>Rédigez un titre clair et précis.</li>
+              <li>Décrivez l'utilité concrète pour le lecteur.</li>
+              <li>Citez vos sources si possible.</li>
+              <li>Vérifiez l'orthographe avant de soumettre.</li>
+            </ul>
+          </div>
+          <div class="aside-card aside-card--info">
+            <h2 class="aside-title">🔒 Vos données</h2>
+            <p>Conformément au RGPD, vous pouvez demander la suppression de votre contribution à tout moment via votre espace personnel.</p>
+          </div>
+          <div class="aside-card">
+            <h2 class="aside-title">⏱ Délai de modération</h2>
+            <p>Les contributions sont évaluées par des super-utilisateurs bénévoles en <strong>48 à 72 heures</strong>.</p>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== PAGE : MODÉRATION ==================== -->
+  <section id="page-moderation" class="page" aria-labelledby="moderation-title" hidden>
+    <div class="container section">
+      <div class="page-header">
+        <h1 id="moderation-title">Espace Modération</h1>
+        <p class="page-subtitle">Ressources en attente de validation citoyenne.</p>
+      </div>
+
+      <!-- Statistiques RGPD/RGAA -->
+      <div class="mod-stats-grid" role="list" aria-label="Statistiques de modération">
+        <div class="mod-stat-card" role="listitem">
+          <span class="mod-stat-num">7</span>
+          <span class="mod-stat-label">En attente</span>
+          <div class="stat-bar"><div class="stat-bar-fill pct-35"></div></div>
+        </div>
+        <div class="mod-stat-card" role="listitem">
+          <span class="mod-stat-num">23</span>
+          <span class="mod-stat-label">Validées ce mois</span>
+          <div class="stat-bar"><div class="stat-bar-fill stat-bar--green pct-75"></div></div>
+        </div>
+        <div class="mod-stat-card" role="listitem">
+          <span class="mod-stat-num">4</span>
+          <span class="mod-stat-label">Refusées ce mois</span>
+          <div class="stat-bar"><div class="stat-bar-fill stat-bar--red pct-15"></div></div>
+        </div>
+        <div class="mod-stat-card" role="listitem">
+          <span class="mod-stat-num">48h</span>
+          <span class="mod-stat-label">Délai moyen</span>
+          <div class="stat-bar"><div class="stat-bar-fill stat-bar--orange pct-50"></div></div>
+        </div>
+      </div>
+
+      <!-- Conformité RGPD / RGAA -->
+      <div class="compliance-row">
+        <div class="compliance-badge compliance-badge--ok">
+          <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          RGPD conforme — données anonymisées
+        </div>
+        <div class="compliance-badge compliance-badge--ok">
+          <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          RGAA niveau AA — accessibilité vérifiée
+        </div>
+        <div class="compliance-badge compliance-badge--warn">
+          <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m10.29 3.86-7.83 13.5A2 2 0 0 0 4.18 20h15.64a2 2 0 0 0 1.72-3l-7.83-13.5a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          2 ressources à vérifier (droits d'auteur)
+        </div>
+      </div>
+
+      <!-- Liste des ressources à modérer -->
+      <div class="mod-table-wrap" role="region" aria-label="Liste des ressources à modérer">
+        <table class="mod-table" aria-label="Ressources en attente de modération">
+          <caption class="sr-only">Tableau des ressources soumises en attente de validation</caption>
+          <thead>
+            <tr>
+              <th scope="col">Titre</th>
+              <th scope="col">Type</th>
+              <th scope="col">Relation</th>
+              <th scope="col">Auteur</th>
+              <th scope="col">Soumis le</th>
+              <th scope="col">Statut</th>
+              <th scope="col">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="mod-table-body">
+            <!-- Lignes générées par JS -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Détail d'une ressource (masqué par défaut) -->
+      <div id="mod-detail" class="mod-detail" hidden aria-live="polite">
+        <div class="mod-detail-header">
+          <h2 id="mod-detail-title" class="mod-detail-title">Titre de la ressource</h2>
+          <button type="button" class="btn btn-ghost btn-sm" id="btn-close-detail" aria-label="Fermer le détail">✕ Fermer</button>
+        </div>
+        <p id="mod-detail-content">Résumé de la ressource…</p>
+        <div class="mod-actions">
+          <button type="button" class="btn btn-success" id="btn-approve" aria-label="Valider cette ressource">✓ Valider</button>
+          <button type="button" class="btn btn-danger" id="btn-reject" aria-label="Refuser cette ressource">✗ Refuser</button>
+          <button type="button" class="btn btn-ghost" id="btn-ask-edit" aria-label="Demander une modification">⟲ Demander modif.</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== PAGE : TABLEAU DE BORD ==================== -->
+  <section id="page-tableau-de-bord" class="page" aria-labelledby="dashboard-title" hidden>
+    <div class="container section">
+      <div class="page-header">
+        <h1 id="dashboard-title">Tableau de bord</h1>
+        <p class="page-subtitle">Indicateurs de la plateforme — mis à jour quotidiennement.</p>
+      </div>
+
+      <!-- KPI principaux -->
+      <div class="kpi-grid" role="list" aria-label="Indicateurs clés de performance">
+        <div class="kpi-card" role="listitem">
+          <div class="kpi-icon kpi-icon--blue" aria-hidden="true">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          </div>
+          <div class="kpi-content">
+            <span class="kpi-value">3 847</span>
+            <span class="kpi-label">Utilisateurs actifs</span>
+            <span class="kpi-trend kpi-trend--up"><span aria-hidden="true">↑</span><span class="sr-only">Hausse de</span> 12% ce mois</span>
+          </div>
+        </div>
+
+        <div class="kpi-card" role="listitem">
+          <div class="kpi-icon kpi-icon--orange" aria-hidden="true">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          </div>
+          <div class="kpi-content">
+            <span class="kpi-value">1 240</span>
+            <span class="kpi-label">Ressources publiées</span>
+            <span class="kpi-trend kpi-trend--up"><span aria-hidden="true">↑</span><span class="sr-only">Hausse de</span> 8% ce mois</span>
+          </div>
+        </div>
+
+        <div class="kpi-card" role="listitem">
+          <div class="kpi-icon kpi-icon--green" aria-hidden="true">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+          </div>
+          <div class="kpi-content">
+            <span class="kpi-value">94%</span>
+            <span class="kpi-label">Taux de satisfaction</span>
+            <span class="kpi-trend kpi-trend--stable"><span aria-hidden="true">→</span><span class="sr-only">Tendance</span> Stable</span>
+          </div>
+        </div>
+
+        <div class="kpi-card" role="listitem">
+          <div class="kpi-icon kpi-icon--purple" aria-hidden="true">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+          <div class="kpi-content">
+            <span class="kpi-value">42h</span>
+            <span class="kpi-label">Temps moy. d'engagement</span>
+            <span class="kpi-trend kpi-trend--up"><span aria-hidden="true">↑</span><span class="sr-only">Hausse de</span> 5% ce mois</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sections détaillées masquées -->
+      <div class="dashboard-sections">
+
+        <!-- Section Répartition des ressources -->
+        <div class="dash-section-card">
+          <div class="dash-section-header">
+            <h2 class="dash-section-title">Répartition des ressources</h2>
+            <button type="button" class="btn btn-outline btn-sm toggle-detail-btn" aria-expanded="false" data-target="detail-repartition">
+              Afficher les détails
+            </button>
+          </div>
+          <div class="dash-section-summary">
+            <div class="mini-bars">
+              <div class="mini-bar-item">
+                <span class="mini-bar-label">Communication</span>
+                <div class="mini-bar-track"><div class="mini-bar-fill pct-68"></div></div>
+                <span class="mini-bar-val">68%</span>
+              </div>
+              <div class="mini-bar-item">
+                <span class="mini-bar-label">Conflits</span>
+                <div class="mini-bar-track"><div class="mini-bar-fill pct-45"></div></div>
+                <span class="mini-bar-val">45%</span>
+              </div>
+              <div class="mini-bar-item">
+                <span class="mini-bar-label">Bien-être</span>
+                <div class="mini-bar-track"><div class="mini-bar-fill mini-bar-fill--orange pct-82"></div></div>
+                <span class="mini-bar-val">82%</span>
+              </div>
+            </div>
+          </div>
+          <div id="detail-repartition" class="dash-detail" hidden>
+            <table class="detail-table" aria-label="Détail de la répartition des ressources">
+              <thead><tr><th>Catégorie</th><th>Nb ressources</th><th>Vues</th><th>% satisfaction</th></tr></thead>
+              <tbody>
+                <tr><td>Communication</td><td>412</td><td>24 500</td><td>96%</td></tr>
+                <tr><td>Gestion des conflits</td><td>287</td><td>18 200</td><td>93%</td></tr>
+                <tr><td>Bien-être</td><td>341</td><td>31 000</td><td>97%</td></tr>
+                <tr><td>Vie de couple</td><td>198</td><td>14 800</td><td>91%</td></tr>
+                <tr><td>Parentalité</td><td>156</td><td>11 200</td><td>95%</td></tr>
+                <tr><td>Vie au travail</td><td>133</td><td>9 800</td><td>89%</td></tr>
+                <tr><td>Voisinage</td><td>98</td><td>6 200</td><td>88%</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Section Activité des modérateurs -->
+        <div class="dash-section-card">
+          <div class="dash-section-header">
+            <h2 class="dash-section-title">Activité des modérateurs</h2>
+            <button type="button" class="btn btn-outline btn-sm toggle-detail-btn" aria-expanded="false" data-target="detail-moderateurs">
+              Afficher les détails
+            </button>
+          </div>
+          <div class="dash-section-summary">
+            <p class="dash-summary-text">
+              <strong>12 modérateurs actifs</strong> — <strong>27 actions</strong> cette semaine —
+              délai moyen de traitement : <strong>36h</strong>
+            </p>
+          </div>
+          <div id="detail-moderateurs" class="dash-detail" hidden>
+            <table class="detail-table" aria-label="Activité détaillée des modérateurs">
+              <thead><tr><th>Modérateur</th><th>Validées</th><th>Refusées</th><th>En cours</th><th>Délai moy.</th></tr></thead>
+              <tbody>
+                <tr><td>Marie D.</td><td>8</td><td>1</td><td>2</td><td>22h</td></tr>
+                <tr><td>Jean-Pierre M.</td><td>6</td><td>2</td><td>1</td><td>41h</td></tr>
+                <tr><td>Amira B.</td><td>5</td><td>0</td><td>3</td><td>18h</td></tr>
+                <tr><td>Thomas K.</td><td>4</td><td>1</td><td>0</td><td>56h</td></tr>
+                <tr><td>Sophie R.</td><td>4</td><td>0</td><td>1</td><td>29h</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Section Conformité RGPD -->
+        <div class="dash-section-card">
+          <div class="dash-section-header">
+            <h2 class="dash-section-title">Conformité &amp; Accessibilité</h2>
+            <button type="button" class="btn btn-outline btn-sm toggle-detail-btn" aria-expanded="false" data-target="detail-rgpd">
+              Afficher les détails
+            </button>
+          </div>
+          <div class="dash-section-summary">
+            <div class="compliance-tags">
+              <span class="tag-compliance tag-compliance--ok">RGPD ✓</span>
+              <span class="tag-compliance tag-compliance--ok">RGAA AA ✓</span>
+              <span class="tag-compliance tag-compliance--warn">2 alertes actives</span>
+            </div>
+          </div>
+          <div id="detail-rgpd" class="dash-detail" hidden>
+            <ul class="rgpd-list">
+              <li class="rgpd-item rgpd-item--ok">
+                <strong>Consentement RGPD</strong> — 100% des utilisateurs ont accepté les CGU.
+              </li>
+              <li class="rgpd-item rgpd-item--ok">
+                <strong>Anonymisation</strong> — les données identifiables sont masquées dans tous les exports.
+              </li>
+              <li class="rgpd-item rgpd-item--ok">
+                <strong>Droit à l'oubli</strong> — 3 demandes traitées ce trimestre (délai &lt; 72h).
+              </li>
+              <li class="rgpd-item rgpd-item--ok">
+                <strong>Accessibilité RGAA</strong> — niveau AA atteint sur les 5 pages principales.
+              </li>
+              <li class="rgpd-item rgpd-item--warn">
+                <strong>⚠ Cookies tiers</strong> — 2 scripts analytiques à requalifier avant le 01/07.
+              </li>
+              <li class="rgpd-item rgpd-item--warn">
+                <strong>⚠ Contraste couleur</strong> — 1 composant badge à corriger (ratio 3.8:1 vs 4.5:1 requis).
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Section Tendances -->
+        <div class="dash-section-card">
+          <div class="dash-section-header">
+            <h2 class="dash-section-title">Tendances &amp; thématiques populaires</h2>
+            <button type="button" class="btn btn-outline btn-sm toggle-detail-btn" aria-expanded="false" data-target="detail-tendances">
+              Afficher les détails
+            </button>
+          </div>
+          <div class="dash-section-summary">
+            <div class="tag-cloud" role="group" aria-label="Nuage de mots des thématiques populaires">
+              <span class="tag-word tag-word--lg">Communication</span>
+              <span class="tag-word tag-word--md">Parentalité</span>
+              <span class="tag-word tag-word--sm">Empathie</span>
+              <span class="tag-word tag-word--lg">Conflits</span>
+              <span class="tag-word tag-word--md">Écoute</span>
+              <span class="tag-word tag-word--sm">Couple</span>
+              <span class="tag-word tag-word--sm">Travail</span>
+              <span class="tag-word tag-word--md">Bien-être</span>
+            </div>
+          </div>
+          <div id="detail-tendances" class="dash-detail" hidden>
+            <table class="detail-table" aria-label="Évolution mensuelle des thématiques">
+              <thead><tr><th>Thématique</th><th>Janvier</th><th>Février</th><th>Mars</th><th>Tendance</th></tr></thead>
+              <tbody>
+                <tr><td>Communication</td><td>2 100</td><td>2 400</td><td>2 800</td><td class="trend-up">↑ +17%</td></tr>
+                <tr><td>Bien-être</td><td>1 800</td><td>2 200</td><td>2 600</td><td class="trend-up">↑ +18%</td></tr>
+                <tr><td>Gestion conflits</td><td>1 200</td><td>1 350</td><td>1 400</td><td class="trend-up">↑ +4%</td></tr>
+                <tr><td>Parentalité</td><td>980</td><td>920</td><td>1 050</td><td class="trend-up">↑ +7%</td></tr>
+                <tr><td>Vie de couple</td><td>760</td><td>740</td><td>720</td><td class="trend-down">↓ -3%</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ===== FOOTER ===== -->
+<footer class="site-footer" role="contentinfo">
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <span class="logo-re">(RE)</span><span class="logo-sources">Sources</span>
+      <p>Plateforme citoyenne de ressources relationnelles.</p>
+    </div>
+    <nav class="footer-nav" aria-label="Navigation secondaire">
+      <ul>
+        <li><a href="#">Mentions légales</a></li>
+        <li><a href="#">Politique de confidentialité</a></li>
+        <li><a href="#">Accessibilité (RGAA)</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
+    </nav>
+    <p class="footer-copy">© 2025 (RE)Sources Relationnelles — Prototype statique</p>
+  </div>
+</footer>
+
+<!-- ===== MODAL DE CONNEXION ===== -->
+<!-- Overlay -->
+<div id="modal-overlay" class="modal-overlay" hidden aria-hidden="true"></div>
+
+<!-- Boîte de dialogue modale -->
+<div id="login-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" hidden>
+  <div class="modal-header">
+    <h2 id="modal-title" class="modal-title">Connexion</h2>
+    <button type="button" class="modal-close" id="btn-close-modal" aria-label="Fermer la fenêtre de connexion">
+      <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <form id="login-form" class="modal-form" novalidate aria-label="Formulaire de connexion">
+    <div class="form-group">
+      <label for="login-email" class="form-label">
+        Adresse e-mail <span class="required" aria-hidden="true">*</span>
+      </label>
+      <input type="email" id="login-email" name="email" class="form-input"
+        placeholder="prenom.nom@exemple.fr" required autocomplete="email"
+        aria-describedby="login-email-error" />
+      <span id="login-email-error" class="form-error" role="alert" aria-live="polite" hidden>Veuillez saisir un e-mail valide.</span>
+    </div>
+    <div class="form-group">
+      <label for="login-password" class="form-label">
+        Mot de passe <span class="required" aria-hidden="true">*</span>
+      </label>
+      <div class="password-wrap">
+        <input type="password" id="login-password" name="password" class="form-input"
+          placeholder="••••••••" required autocomplete="current-password"
+          aria-describedby="login-pwd-error" />
+        <button type="button" class="pwd-toggle" id="pwd-toggle" aria-label="Afficher/masquer le mot de passe">
+          <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        </button>
+      </div>
+      <span id="login-pwd-error" class="form-error" role="alert" aria-live="polite" hidden>Veuillez saisir un mot de passe.</span>
+    </div>
+    <div class="form-group">
+      <label for="login-role" class="form-label">Votre rôle</label>
+      <select id="login-role" name="role" class="form-select">
+        <option value="citoyen">Citoyen</option>
+        <option value="super-utilisateur">Super-utilisateur</option>
+        <option value="moderateur">Modérateur</option>
+        <option value="administrateur">Administrateur</option>
+      </select>
+    </div>
+    <div class="form-check modal-check">
+      <input type="checkbox" id="login-remember" name="remember" class="form-checkbox" />
+      <label for="login-remember">Se souvenir de moi</label>
+    </div>
+    <div id="login-error-msg" class="form-error login-error-global" hidden role="alert">
+      Identifiants incorrects. Veuillez réessayer.
+    </div>
+    <button type="submit" class="btn btn-primary btn-block">Se connecter</button>
+    <p class="modal-footer-links">
+      <a href="#" class="link-inline">Mot de passe oublié ?</a> · <a href="#" class="link-inline">Créer un compte</a>
+    </p>
+  </form>
+</div>
+
+<!-- Notification de succès connexion -->
+<div id="toast" class="toast" hidden role="status" aria-live="polite"></div>
+
+<!-- utils.js doit être chargé AVANT app.js : il expose escHtml() et formatDate() -->
+<script src="utils.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
